@@ -6,9 +6,13 @@
     .hidden{
         display: none;
     }
+    .visibility{
+        visibility: hidden;
+    }
 </style>
 @section('content')
 <div class="container">
+
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
@@ -26,19 +30,21 @@
             </div>
         </div>
 
-
         <div class="col-md-4 mt-5 text-center">
+            <h2>Generate Parking In Entry Slip</h2>
             <form class="form-inline">
                 <div class="form-group mx-sm-3 mb-2">
                   {{-- <label for="vichle_number" class="sr-only">Enter Vichle Number</label> --}}
                   <input type="text" class="form-control" id="vichle_number" placeholder="Enter Vichle Number" onkeyup="this.value = this.value.toUpperCase(); this.value = this.value.replace(/\s+/g, '-')">
                 </div>
-                <button type="submit" class="btn btn-primary mb-2" id="qrBtn">Submit</button> <br>
+                <button type="submit" class="btn btn-primary mb-2" id="qrBtn">Submit</button>
+                <button type="submit" class="btn btn-primary mb-2 visibility" id="print_qr_btn">Print</button>
+                <br>
                 <span id="msg"></span>
               </form>
         </div>
 
-        <div class="col-md-4 text-center qrcode_div" id="qrcode_div" >
+        <div class="col-md-4 text-center print qrcode_div" id="qrcode_div" >
             {{-- <img src="" alt=""> --}}
             <div id="qrcode" style="padding: 10px;height:auto;width:65px;position: absolute;"></div>
             <span id="exist_msg" class="hidden" style="position: relative;right: 2.4rem;top: 9rem;">
@@ -57,9 +63,10 @@
             </span>
         </div>
 
-        <div class="col-md-4 qrcode_div_info" id="qrcode_div_info">
+        <div class="col-md-4 qrcode_div_info print" id="qrcode_div_info">
             <div class="qrtext"></div>
         </div>
+
 
 
     </div>
@@ -70,6 +77,7 @@
     qrBtn.addEventListener('click',function(e){
 
         e.preventDefault();
+        $('#print_qr_btn').removeClass('visibility');
         let qrText = $('#vichle_number').val();
         if(qrText == ''){
             $('#msg').html('<span style="padding: 5px 85px;background: red;color: #fff;">Enter Vehical Number Required...</span>');
@@ -100,6 +108,7 @@
                     console.log(response);
                     if(response.status == true){
                         $('#msg').html('<span style="padding: 5px 85px;background: green;color: #fff;">Successfully Genrate Parking Slip</span>');
+                        $('#print_qr_btn').removeClass('hidden');
                     }else if(response.status == 2){
                         $('#msg').html('<span style="padding: 5px 85px;background: red;color: #fff;">This Vechical Not Pay Parking</span>');
                         $('.qrcode_div img').addClass('blur_exist');
@@ -169,6 +178,19 @@
         alert('Please Select Hour');
     }
   });
+
+
+
+    $("#print_qr_btn").click(function (e) {
+        e.preventDefault();
+        var divToPrint=document.getElementById('qrcode');
+        var info=document.getElementById('qrcode_div_info');
+        var newWin=window.open('','Print-Window');
+        newWin.document.open();
+        newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'  '+info.innerHTML+'</body></html>');
+        newWin.document.close();
+        setTimeout(function(){newWin.close();},10);
+    });
 
 </script>
 @endsection

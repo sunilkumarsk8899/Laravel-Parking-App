@@ -31,10 +31,19 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['prefix' => 'super-admin',  'middleware' => 'super_admin'], function(){
 
+    /**
+     * entry parking
+     */
     Route::get('/index',[SuperAdminController::class,'index'])->name('super_admin.index');
     Route::post('/store-vehical-record',[SuperAdminController::class,'store_vehical_record'])->name('super_admin.store_vehical_record');
     Route::post('/delete-vehical-record',[SuperAdminController::class,'delete_vehical_record'])->name('super_admin.delete_vehical_record');
     Route::post('/pay-vehical-record',[SuperAdminController::class,'pay_vehical_record'])->name('super_admin.pay_vehical_record');
+
+    /**
+     * exit parking
+     */
+    Route::get('/exit-parking',[SuperAdminController::class,'exit_parking'])->name('super_admin.exit_parking');
+    Route::post('/exit-parking-paid',[SuperAdminController::class,'exit_parking_paid'])->name('super_admin.exit_parking_paid');
 
 });
 
